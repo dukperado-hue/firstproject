@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: caat-vor-lineoa
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: VOR_DATA_DIR
+        value: /data
+    disk:
+      name: vor-data
+      mountPath: /data
+      sizeGB: 1

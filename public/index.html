@@ -656,7 +656,20 @@ html, body {
 
   <div id="root"></div>
 
-  
+  <!-- LIFF: lets this page run inside the LINE app (opened from a rich
+       menu / chat link) instead of only in a regular browser. Set the
+       liff-id meta tag to the LIFF ID from LINE Developers Console once
+       you've created a LIFF app for the @516aeafl channel. Safe to leave
+       unset — the page still works as a normal website. -->
+  <meta name="liff-id" content="">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    (function () {
+      var liffId = (document.querySelector('meta[name="liff-id"]') || {}).content;
+      if (!liffId) return;
+      liff.init({ liffId: liffId }).catch(function (e) { console.warn('[liff] init failed', e); });
+    })();
+  </script>
 
   <script src="assets/react.production.min.js"></script>
   <script src="assets/react-dom.production.min.js"></script>
