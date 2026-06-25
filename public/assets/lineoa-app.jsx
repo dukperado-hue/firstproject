@@ -44,7 +44,8 @@ function NongSamleeAvatar({ size = 36 }) {
 function LineHeader() {
   return (
     <div style={{
-      background: LINE_GREEN, color: '#fff', padding: '52px 14px 12px',
+      background: LINE_GREEN, color: '#fff', padding: '14px 14px 12px',
+      paddingTop: 'calc(14px + env(safe-area-inset-top, 0px))',
       display: 'flex', alignItems: 'center', gap: 10, position: 'relative', flexShrink: 0,
     }}>
       <svg width="11" height="18" viewBox="0 0 11 18" fill="none" style={{ marginRight: 4 }}>
@@ -213,12 +214,16 @@ function Typing() {
 // ──────────────────────────────────────────────────────────────
 // Footer: interactive input bar + decorative rich menu
 // ──────────────────────────────────────────────────────────────
-function ChatFooter({ active, value, onChange, onSend, placeholder }) {
-  const cell = (icon, label) => (
-    <div style={{
-      flex: 1, padding: '9px 6px', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.18)',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#fff', fontSize: 11, fontWeight: 600,
-    }}>
+function ChatFooter({ active, value, onChange, onSend, placeholder, onAction }) {
+  const cell = (icon, label, action) => (
+    <div
+      onClick={() => onAction && onAction(action)}
+      style={{
+        flex: 1, padding: '9px 6px', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.18)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#fff', fontSize: 11, fontWeight: 600,
+        cursor: 'pointer',
+      }}
+    >
       <div style={{ width: 26, height: 26, borderRadius: 8, background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
       <div>{label}</div>
     </div>
@@ -258,10 +263,10 @@ function ChatFooter({ active, value, onChange, onSend, placeholder }) {
         )}
       </div>
       <div style={{ background: '#236595', display: 'flex' }}>
-        {cell(ic(<><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/><path d="M14 2v6h6" stroke="#fff" strokeWidth="2"/></>), 'รายงานเหตุการณ์')}
-        {cell(ic(<><circle cx="12" cy="12" r="9" stroke="#fff" strokeWidth="2"/><path d="M12 7v5l3 2" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></>), 'ตรวจสอบสถานะ')}
-        {cell(ic(<path d="M4 4.5A2.5 2.5 0 016.5 2H20v16H6.5a2.5 2.5 0 000 5H20" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/>), 'คู่มือ')}
-        {cell(ic(<><circle cx="12" cy="12" r="9" stroke="#fff" strokeWidth="2"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 3.5M12 17h.01" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></>), 'ช่วยเหลือ')}
+        {cell(ic(<><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/><path d="M14 2v6h6" stroke="#fff" strokeWidth="2"/></>), 'รายงานเหตุการณ์', 'report')}
+        {cell(ic(<><circle cx="12" cy="12" r="9" stroke="#fff" strokeWidth="2"/><path d="M12 7v5l3 2" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></>), 'ตรวจสอบสถานะ', 'track')}
+        {cell(ic(<path d="M4 4.5A2.5 2.5 0 016.5 2H20v16H6.5a2.5 2.5 0 000 5H20" stroke="#fff" strokeWidth="2" strokeLinejoin="round"/>), 'คู่มือ', 'guide')}
+        {cell(ic(<><circle cx="12" cy="12" r="9" stroke="#fff" strokeWidth="2"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 3.5M12 17h.01" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></>), 'ช่วยเหลือ', 'help')}
       </div>
     </div>
   );
@@ -595,6 +600,20 @@ function LineOA() {
 
   const lastUserId = (() => { for (let i = msgs.length - 1; i >= 0; i--) if (msgs[i].from === 'user') return msgs[i].id; return null; })();
 
+  function handleMenuAction(action) {
+    setQr(null);
+    disableText();
+    if (action === 'report') { addUser('📝 รายงานเหตุการณ์'); askType(); }
+    else if (action === 'track') { addUser('🔍 ตรวจสอบสถานะ'); askTrack(); }
+    else if (action === 'guide') {
+      addUser('คู่มือ');
+      botSay('การรายงานทุกครั้งไม่เปิดเผยตัวตนและไม่ใช้เพื่อการลงโทษค่ะ พิมพ์หรือเลือกตัวเลือกที่บอทเสนอเพื่อกรอกรายงานทีละขั้นตอนได้เลยนะคะ');
+    } else if (action === 'help') {
+      addUser('ช่วยเหลือ');
+      botSay('หากต้องการความช่วยเหลือเพิ่มเติม ติดต่อทีม Safety ของ CAAT ได้โดยตรง หรือกด "🔍 ติดตามสถานะ" เพื่อดูความคืบหน้ารายงานที่ส่งไปแล้วค่ะ');
+    }
+  }
+
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <style>{`@keyframes samleeBlink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-2px)}}@keyframes samleePush{0%{opacity:0;transform:translateY(-18px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1)}}`}</style>
@@ -616,7 +635,7 @@ function LineOA() {
           {typing && <Typing />}
           {qr && !typing && <QuickReplies items={qr.items} onPick={qr.onPick} />}
         </div>
-        <ChatFooter active={inputActive} value={inputValue} onChange={setInputValue} onSend={sendText} placeholder={placeholder} />
+        <ChatFooter active={inputActive} value={inputValue} onChange={setInputValue} onSend={sendText} placeholder={placeholder} onAction={handleMenuAction} />
       </div>
     </div>
   );
