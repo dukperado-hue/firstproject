@@ -596,7 +596,7 @@ function LineOA() {
   const lastUserId = (() => { for (let i = msgs.length - 1; i >= 0; i--) if (msgs[i].from === 'user') return msgs[i].id; return null; })();
 
   return (
-    <IOSDevice width={402} height={874}>
+    <div style={{ width: '100%', height: '100%' }}>
       <style>{`@keyframes samleeBlink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-2px)}}@keyframes samleePush{0%{opacity:0;transform:translateY(-18px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1)}}`}</style>
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'Sarabun, sans-serif', position: 'relative' }}>
         {notif && <PushBanner data={notif} onClose={() => setNotif(null)} />}
@@ -618,7 +618,7 @@ function LineOA() {
         </div>
         <ChatFooter active={inputActive} value={inputValue} onChange={setInputValue} onSend={sendText} placeholder={placeholder} />
       </div>
-    </IOSDevice>
+    </div>
   );
 }
 

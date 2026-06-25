@@ -604,12 +604,13 @@ html, body {
 </style>
 
 <style>
-  html, body { margin: 0; padding: 0; background: #eef2f6; min-height: 100vh; }
+  html, body { margin: 0; padding: 0; background: #eef2f6; height: 100%; }
   body {
     font-family: 'Sarabun', system-ui, sans-serif;
-    display: flex; align-items: flex-start; justify-content: center;
-    gap: 56px; padding: 56px 32px 96px;
+    display: flex; align-items: stretch; justify-content: center;
+    overflow: hidden;
   }
+  #root { width: 100%; height: 100vh; }
   .stage-title { font-family: 'Sarabun', sans-serif; }
   .stage-title h1 { font-size: 28px; font-weight: 700; color: #133852; margin: 0 0 6px; letter-spacing: -0.01em; }
   .stage-title p { color: #4f5e6d; font-size: 15px; margin: 0 0 4px; max-width: 360px; line-height: 1.5; }
@@ -645,14 +646,6 @@ html, body {
 </style>
 </head>
 <body>
-
-  <div class="stage-title">
-    <a class="portal-back" href="landing.html">← กลับ · Portal</a>
-    <h1>น้องสำลี on LINE</h1>
-    <p>The voluntary, non-punitive intake channel for Web VOR. The bot walks a reporter through type → severity → place → time → narrative → photo → contact, files the report de-identified, then pushes a LINE status update once Safety picks it up.</p>
-    <small>CAB Req. No. 22 · ICAO Annex 19 · ADREP-coded</small>
-    <div class="caption-pill">LINE Official Account · @caat-vor</div>
-  </div>
 
   <div id="root"></div>
 
