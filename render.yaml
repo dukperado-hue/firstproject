@@ -8,9 +8,14 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20
-      - key: VOR_DATA_DIR
-        value: /data
-    disk:
-      name: vor-data
-      mountPath: /data
-      sizeGB: 1
+
+# NOTE: the free plan doesn't support persistent disks, so
+# server/data/reports.json resets on every restart/redeploy.
+# Upgrade this service to the Starter plan, then add back:
+#
+#     disk:
+#       name: vor-data
+#       mountPath: /data
+#       sizeGB: 1
+#
+# and set VOR_DATA_DIR=/data as an env var to persist reports.
